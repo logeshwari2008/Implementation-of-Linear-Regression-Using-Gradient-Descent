@@ -20,51 +20,71 @@ Program to implement the linear regression using gradient descent.
 Developed by: LOGESHWARI N
 RegisterNumber:  212225040206
 */
-
 import numpy as np
+import pandas as pd 
 import matplotlib.pyplot as plt
 
-# Step 1: Dataset (X = input, y = output)
-X = np.array([1, 2, 3, 4, 5])
-y = np.array([2, 4, 5, 4, 5])
+data = pd.read_csv("C:/Users/acer/Downloads/50_Startups.csv")
+x = data["R&D Spend"].values
+y = data["Profit"].values
 
-# Step 2: Initialize parameters
-m = 0   # slope
-b = 0   # intercept
-learning_rate = 0.01
-epochs = 1000
-n = len(X)
+x_mean = np.mean(x)
+x_std = np.std(x)
+x = (x - x_mean) /x_std
 
-# Step 3: Gradient Descent
-for i in range(epochs):
-    y_pred = m * X + b
+w = 0.0
+b = 0.0
+alpha = 0.01
+epochs = 100
+n = len(x)
+
+losses = []
+
+for _ in range(epochs):
+    y_hat = w * x+b
+    loss = np.mean((y_hat - y) ** 2)
+    losses.append(loss)
     
-    # Calculate gradients
-    dm = (-2/n) * np.sum(X * (y - y_pred))
-    db = (-2/n) * np.sum(y - y_pred)
+    dw = (2/n) * np.sum((y_hat - y) * x)
+    db = (2/n) * np.sum(y_hat - y)
     
-    # Update parameters
-    m = m - learning_rate * dm
-    b = b - learning_rate * db
+    w -= alpha * dw
+    b -= alpha * db
 
-# Step 4: Final model
-print("Slope (m):", m)
-print("Intercept (b):", b)
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Step 5: Predictions
-y_pred = m * X + b
+plt.figure(figsize=(12, 5))
 
-# Step 6: Plot
-plt.scatter(X, y, color='blue', label='Actual Data')
-plt.plot(X, y_pred, color='red', label='Regression Line')
-plt.xlabel("X")
-plt.ylabel("y")
-plt.legend()
+plt.subplot(1, 2, 1)
+plt.plot(losses)
+plt.xlabel("Iterations")
+plt.ylabel("Loss (MSE)")
+plt.title("Loss vs Iterations")
+
+plt.subplot(1, 2, 2)
+plt.scatter(x, y)
+
+x_sorted = np.argsort(x)
+plt.plot(
+    x[x_sorted],
+    (w * x + b)[x_sorted],
+    color="red"
+)
+plt.xlabel("R&D Spend (scaled)")
+plt.ylabel("Profit")
+plt.title("Linear Regression Fit")
+
+plt.tight_layout()
 plt.show()
+
+print("Final weight (w):", w)
+print("Final bias (b):", b)
 ```
 
 ## Output:
-<img width="852" height="553" alt="Screenshot 2026-04-28 090417" src="https://github.com/user-attachments/assets/ae89c0fb-6b07-4d4a-949e-b9bbf7ab3bfa" />
+<img width="1319" height="586" alt="image" src="https://github.com/user-attachments/assets/e8767b61-c161-4bf9-99a3-e635f5f4e8d9" />
+
 
 
 
